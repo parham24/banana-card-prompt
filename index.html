@@ -1,1 +1,217 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banana Pro Card Prompt Builder</title>
 
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Tahoma,Arial,sans-serif;
+  background:radial-gradient(circle at top,#1e293b,#020617);
+  color:#e5e7eb;
+}
+
+.wrapper{
+  max-width:980px;
+  margin:40px auto;
+  padding:28px;
+  background:rgba(15,23,42,.8);
+  border-radius:24px;
+  box-shadow:0 30px 100px rgba(0,0,0,.85);
+  backdrop-filter:blur(12px);
+}
+
+h1{
+  text-align:center;
+  font-size:24px;
+  margin-bottom:26px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+label{
+  font-size:12px;
+  color:#93c5fd;
+  margin-bottom:6px;
+  display:block;
+}
+
+input,select{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  background:rgba(255,255,255,.06);
+  color:#e5e7eb;
+  outline:2px solid rgba(255,255,255,.08);
+  font-size:13px;
+}
+
+input:focus,select:focus{
+  outline-color:#6366f1;
+}
+
+.full{grid-column:1/3}
+
+button{
+  margin-top:22px;
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:18px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  background:linear-gradient(135deg,#6366f1,#38bdf8);
+  color:#020617;
+}
+
+pre{
+  margin-top:22px;
+  padding:20px;
+  border-radius:18px;
+  background:#020617;
+  font-size:12px;
+  line-height:1.6;
+  max-height:360px;
+  overflow:auto;
+}
+
+.preview{
+  margin-top:30px;
+  padding:20px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#0f172a,#020617);
+  font-family:monospace;
+  font-size:12px;
+  letter-spacing:2px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.footer{
+  margin-top:18px;
+  text-align:center;
+  font-size:11px;
+  color:#94a3b8;
+}
+
+/* موبایل */
+@media(max-width:720px){
+  .grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  h1{font-size:20px}
+}
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+<h1>🎴 سازنده پرامپت کارت بانکی | Banana Pro</h1>
+
+<div class="grid">
+  <div>
+    <label>نام دارنده کارت</label>
+    <input id="name">
+  </div>
+
+  <div>
+    <label>شماره کارت</label>
+    <input id="card">
+  </div>
+
+  <div>
+    <label>تاریخ انقضا</label>
+    <input id="exp">
+  </div>
+
+  <div>
+    <label>CVV2</label>
+    <input id="cvv">
+  </div>
+
+  <div>
+    <label>بانک</label>
+    <select id="bank">
+      <option value="ملی">بانک ملی</option>
+      <option value="ملت">بانک ملت</option>
+      <option value="تجارت">بانک تجارت</option>
+      <option value="صادرات">بانک صادرات</option>
+      <option value="پاسارگاد">بانک پاسارگاد</option>
+      <option value="سامان">بانک سامان</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Preset طراحی</label>
+    <select id="preset">
+      <option value="luxury">لوکس</option>
+      <option value="national">ملی</option>
+      <option value="myth">اساطیری</option>
+    </select>
+  </div>
+</div>
+
+<button onclick="build()">ساخت پرامپت JSON</button>
+
+<pre id="out"></pre>
+
+<div class="preview" id="preview"></div>
+
+<div class="footer">
+خروجی حرفه‌ای | Banana Pro | کارت افقی
+</div>
+</div>
+
+<script>
+function presetText(p){
+  if(p==="luxury")
+    return "luxury iranian bank card design, dark matte background, gold foil elements, premium minimal typography, soft cinematic lighting";
+  if(p==="national")
+    return "iranian national bank card, inspired by iranian architecture, tile patterns, calligraphy, subtle flag colors, authentic cultural identity";
+  return "mythological iranian theme, persepolis reliefs, faravahar symbol, ancient textures, epic cinematic atmosphere";
+}
+
+function build(){
+  const preset=presetText(preset.value);
+
+  const json={
+    title:"banana_pro_iran_bank_card",
+    type:"image_generation",
+    card:{orientation:"horizontal",realistic:true},
+    holder:{
+      name:name.value,
+      card_number:card.value,
+      expiry:exp.value,
+      cvv2:cvv.value,
+      bank:bank.value
+    },
+    visual_prompt:preset,
+    constraints:{
+      no_cartoon:true,
+      professional:true,
+      suitable_for_instagram_story:true
+    },
+    output:{format:"PNG",dpi:300}
+  };
+
+  out.textContent=JSON.stringify(json,null,2);
+
+  preview.innerHTML=
+    "BANK: "+bank.value+"<br>"+
+    "NAME: "+name.value+"<br>"+
+    "CARD: "+card.value+"<br>"+
+    "EXP: "+exp.value+"<br>"+
+    "PRESET: "+preset.value;
+}
+</script>
+</body>
+</html>
